@@ -70,7 +70,7 @@ Returns: rank (0–4) and membership status (YES/NO) for the given address.
 
 Deposit `<AMOUNT>` QU as revenue into the WolfPack contract. Revenue is automatically distributed at 11:00 UTC:
 - **70%** → WP token holders (proportional)
-- **10%** → SC shareholders (burn)
+- **10%** → SC shareholders 
 - **10%** → Clan members (rank-weighted)
 - **10%** → Reinvestment fund
 
