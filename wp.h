@@ -9,6 +9,7 @@
 #define WP_GET_STATUS           1
 #define WP_GET_HOLDER_INFO      2
 #define WP_GET_CLAN_MEMBER_INFO 3
+#define WP_GET_SHAREHOLDER_INFO 4
 
 // Procedure IDs
 #define WP_PROC_DEPOSIT_REVENUE     1
@@ -25,6 +26,8 @@ struct WPGetStatus_output
 {
     uint64_t holderCount;
     uint64_t totalTokensSnapshot;
+    uint64_t shareholderCount;
+    uint64_t totalSharesSnapshot;
     uint64_t clanMemberCount;
     uint64_t pendingRevenue;
     uint64_t reinvestmentFund;
@@ -44,6 +47,17 @@ struct WPGetHolderInfo_output
 {
     uint64_t tokenBalance;
     uint32_t isHolder;
+};
+
+// fn 4 – GetShareholderInfo
+struct WPGetShareholderInfo_input
+{
+    uint8_t shareholderAddress[32];
+};
+struct WPGetShareholderInfo_output
+{
+    uint64_t shares;
+    uint32_t isShareholder;
 };
 
 // fn 3 – GetClanMemberInfo
@@ -96,6 +110,7 @@ struct WPSetExcludeAddress_input
 void wpStatus(const char* nodeIp, int nodePort);
 void wpHolderInfo(const char* nodeIp, int nodePort, const char* address);
 void wpClanMemberInfo(const char* nodeIp, int nodePort, const char* address);
+void wpShareholderInfo(const char* nodeIp, int nodePort, const char* address);
 void wpDepositRevenue(const char* nodeIp, int nodePort, const char* seed,
                       uint64_t amount, uint32_t scheduledTickOffset);
 void wpAddClanMember(const char* nodeIp, int nodePort, const char* seed,

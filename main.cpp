@@ -431,6 +431,10 @@ int run(int argc, char* argv[])
             sanityCheckNode(g_nodeIp, g_nodePort);
             wpClanMemberInfo(g_nodeIp, g_nodePort, g_wp_identity);
             break;
+        case WP_SHAREHOLDER_INFO:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            wpShareholderInfo(g_nodeIp, g_nodePort, g_wp_identity);
+            break;
         case WP_DEPOSIT_REVENUE:
             sanityCheckNode(g_nodeIp, g_nodePort);
             sanityCheckSeed(g_seed);

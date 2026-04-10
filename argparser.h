@@ -214,6 +214,8 @@ void print_help()
     printf("\t\tShow token balance and holder status for an address.\n");
     printf("\t-wpclaninfo <ADDRESS>\n");
     printf("\t\tShow clan rank and membership for an address.\n");
+    printf("\t-wpshareholderinfo <ADDRESS>\n");
+    printf("\t\tShow SC shareholder status and shares for an address.\n");
     printf("\t-wpdeposit <amount>\n");
     printf("\t\tDeposit revenue into WolfPack (amount in QU).\n");
     printf("\t-wpaddclan <ADDRESS> <rank>\n");
@@ -1379,6 +1381,15 @@ void parseArgument(int argc, char** argv)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_CLAN_MEMBER_INFO;
+            g_wp_identity = argv[i + 1];
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpshareholderinfo") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_SHAREHOLDER_INFO;
             g_wp_identity = argv[i + 1];
             i += 2;
             CHECK_OVER_PARAMETERS

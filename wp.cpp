@@ -22,6 +22,8 @@ void wpStatus(const char* nodeIp, int nodePort)
     {
         LOG("Holder Count:            %llu\n", (unsigned long long)out.holderCount);
         LOG("Total Tokens Snapshot:   %llu\n", (unsigned long long)out.totalTokensSnapshot);
+        LOG("Shareholder Count:       %llu\n", (unsigned long long)out.shareholderCount);
+        LOG("Total Shares Snapshot:   %llu\n", (unsigned long long)out.totalSharesSnapshot);
         LOG("Clan Member Count:       %llu\n", (unsigned long long)out.clanMemberCount);
         LOG("Pending Revenue:         %llu QU\n", (unsigned long long)out.pendingRevenue);
         LOG("Reinvestment Fund:       %llu QU\n", (unsigned long long)out.reinvestmentFund);
@@ -74,6 +76,26 @@ void wpClanMemberInfo(const char* nodeIp, int nodePort, const char* address)
     else
     {
         LOG("ERROR: Could not query WP GetClanMemberInfo (fn 3)\n");
+    }
+}
+
+void wpShareholderInfo(const char* nodeIp, int nodePort, const char* address)
+{
+    WPGetShareholderInfo_input input = {};
+    getPublicKeyFromIdentity(address, input.shareholderAddress);
+
+    WPGetShareholderInfo_output out = {};
+    if (runContractFunction(nodeIp, nodePort, WP_CONTRACT_INDEX,
+            WP_GET_SHAREHOLDER_INFO, &input, sizeof(input), &out, sizeof(out)))
+    {
+        LOG("═══ WolfPack Shareholder Info ══════════════════════════\n\n");
+        LOG("Address:        %s\n", address);
+        LOG("SC Shares:      %llu\n", (unsigned long long)out.shares);
+        LOG("Is Shareholder: %s\n", out.isShareholder ? "YES" : "NO");
+    }
+    else
+    {
+        LOG("ERROR: Could not query WP GetShareholderInfo (fn 4)\n");
     }
 }
 
