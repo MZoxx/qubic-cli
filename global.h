@@ -277,3 +277,10 @@ char* g_qrwa_gov_qminedev = nullptr;
 uint64_t g_qrwa_gov_electricity_pct = 0;
 uint64_t g_qrwa_gov_maintenance_pct = 0;
 uint64_t g_qrwa_gov_reinvestment_pct = 0;
+
+// wolfpack
+char* g_wp_identity = nullptr;
+uint64_t g_wp_amount = 0;
+uint64_t g_wp_rank = 0;
+uint64_t g_wp_slot = 0;
+char* g_wp_address = nullptr;

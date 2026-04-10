@@ -207,6 +207,26 @@ void print_help()
     printf("\t-qrwarevokeasset <ISSUER> <ASSET_NAME> <numberOfShares>\n");
     printf("\t\tRevoke asset management rights back to QX (100 QU fee).\n");
 
+    printf("\n[WOLFPACK COMMANDS]\n");
+    printf("\t-wpstatus\n");
+    printf("\t\tShow WolfPack contract status.\n");
+    printf("\t-wpholderinfo <ADDRESS>\n");
+    printf("\t\tShow token balance and holder status for an address.\n");
+    printf("\t-wpclaninfo <ADDRESS>\n");
+    printf("\t\tShow clan rank and membership for an address.\n");
+    printf("\t-wpdeposit <amount>\n");
+    printf("\t\tDeposit revenue into WolfPack (amount in QU).\n");
+    printf("\t-wpaddclan <ADDRESS> <rank>\n");
+    printf("\t\tAdd a clan member with rank 0-4 (admin-only).\n");
+    printf("\t-wpremoveclan <ADDRESS>\n");
+    printf("\t\tRemove a clan member (admin-only).\n");
+    printf("\t-wpsetclanrank <ADDRESS> <rank>\n");
+    printf("\t\tSet clan member rank 0-4 (admin-only).\n");
+    printf("\t-wpsetadmin <ADDRESS>\n");
+    printf("\t\tSet new admin address (admin-only).\n");
+    printf("\t-wpsetexclude <slot> <ADDRESS>\n");
+    printf("\t\tSet exclude address slot 1 or 2 (admin-only).\n");
+
     printf("\n[SMART CONTRACT COMMANDS]\n");
     printf("\t-callcontractfunction <CONTRACT_INDEX> <CONTRACT_FUNCTION> <INPUT_FORMAT_STRING> <OUTPUT_FORMAT_STRING>\n");
     printf("\t\tCall a contract function of contract index and print the output. Valid node ip/port are required.\t\n");
@@ -1331,6 +1351,93 @@ void parseArgument(int argc, char** argv)
             g_qrwa_asset_name = argv[i + 2];
             g_qrwa_num_shares = strtoll(argv[i + 3], nullptr, 10);
             i += 4;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+
+        /*****************************
+         ***** WOLFPACK COMMANDS *****
+         *****************************/
+
+        if (strcmp(argv[i], "-wpstatus") == 0)
+        {
+            g_cmd = WP_STATUS;
+            i += 1;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpholderinfo") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_HOLDER_INFO;
+            g_wp_identity = argv[i + 1];
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpclaninfo") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_CLAN_MEMBER_INFO;
+            g_wp_identity = argv[i + 1];
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpdeposit") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_DEPOSIT_REVENUE;
+            g_wp_amount = strtoull(argv[i + 1], nullptr, 10);
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpaddclan") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(2)
+            g_cmd = WP_ADD_CLAN_MEMBER;
+            g_wp_address = argv[i + 1];
+            g_wp_rank = strtoull(argv[i + 2], nullptr, 10);
+            i += 3;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpremoveclan") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_REMOVE_CLAN_MEMBER;
+            g_wp_address = argv[i + 1];
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpsetclanrank") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(2)
+            g_cmd = WP_SET_CLAN_RANK;
+            g_wp_address = argv[i + 1];
+            g_wp_rank = strtoull(argv[i + 2], nullptr, 10);
+            i += 3;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpsetadmin") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_SET_ADMIN;
+            g_wp_address = argv[i + 1];
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpsetexclude") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(2)
+            g_cmd = WP_SET_EXCLUDE_ADDRESS;
+            g_wp_slot = strtoull(argv[i + 1], nullptr, 10);
+            g_wp_address = argv[i + 2];
+            i += 3;
             CHECK_OVER_PARAMETERS
             break;
         }

@@ -23,6 +23,7 @@
 #include "nostromo.h"
 #include "qbond.h"
 #include "qrwa.h"
+#include "wp.h"
 
 int run(int argc, char* argv[])
 {
@@ -416,6 +417,49 @@ int run(int argc, char* argv[])
             sanityCheckNode(g_nodeIp, g_nodePort);
             sanityCheckSeed(g_seed);
             qrwaRevokeAssetMgmt(g_nodeIp, g_nodePort, g_seed, g_qrwa_issuer, g_qrwa_asset_name, g_qrwa_num_shares, g_offsetScheduledTick);
+            break;
+        // ── WolfPack ──
+        case WP_STATUS:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            wpStatus(g_nodeIp, g_nodePort);
+            break;
+        case WP_HOLDER_INFO:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            wpHolderInfo(g_nodeIp, g_nodePort, g_wp_identity);
+            break;
+        case WP_CLAN_MEMBER_INFO:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            wpClanMemberInfo(g_nodeIp, g_nodePort, g_wp_identity);
+            break;
+        case WP_DEPOSIT_REVENUE:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpDepositRevenue(g_nodeIp, g_nodePort, g_seed, g_wp_amount, g_offsetScheduledTick);
+            break;
+        case WP_ADD_CLAN_MEMBER:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpAddClanMember(g_nodeIp, g_nodePort, g_seed, g_wp_address, g_wp_rank, g_offsetScheduledTick);
+            break;
+        case WP_REMOVE_CLAN_MEMBER:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpRemoveClanMember(g_nodeIp, g_nodePort, g_seed, g_wp_address, g_offsetScheduledTick);
+            break;
+        case WP_SET_CLAN_RANK:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpSetClanRank(g_nodeIp, g_nodePort, g_seed, g_wp_address, g_wp_rank, g_offsetScheduledTick);
+            break;
+        case WP_SET_ADMIN:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpSetAdmin(g_nodeIp, g_nodePort, g_seed, g_wp_address, g_offsetScheduledTick);
+            break;
+        case WP_SET_EXCLUDE_ADDRESS:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpSetExcludeAddress(g_nodeIp, g_nodePort, g_seed, g_wp_slot, g_wp_address, g_offsetScheduledTick);
             break;
         case TOOGLE_MAIN_AUX:
             sanityCheckNode(g_nodeIp, g_nodePort);
