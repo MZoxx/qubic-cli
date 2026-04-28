@@ -1452,6 +1452,56 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
+        if (strcmp(argv[i], "-wpstakinginfo") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_STAKING_INFO;
+            g_wp_identity = argv[i + 1];
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpstake") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_STAKE;
+            g_wp_amount = strtoull(argv[i + 1], nullptr, 10);
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wprequestunstake") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_REQUEST_UNSTAKE;
+            g_wp_amount = strtoull(argv[i + 1], nullptr, 10);
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpfinalizeunstake") == 0)
+        {
+            g_cmd = WP_FINALIZE_UNSTAKE;
+            i += 1;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpdepositstaking") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_DEPOSIT_STAKING_REWARDS;
+            g_wp_amount = strtoull(argv[i + 1], nullptr, 10);
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-wpclaimrewards") == 0)
+        {
+            g_cmd = WP_CLAIM_STAKING_REWARDS;
+            i += 1;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
 
         /***********************
          ***** QX COMMANDS *****

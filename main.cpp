@@ -465,6 +465,35 @@ int run(int argc, char* argv[])
             sanityCheckSeed(g_seed);
             wpSetExcludeAddress(g_nodeIp, g_nodePort, g_seed, g_wp_slot, g_wp_address, g_offsetScheduledTick);
             break;
+        case WP_STAKING_INFO:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            wpStakingInfo(g_nodeIp, g_nodePort, g_wp_identity);
+            break;
+        case WP_STAKE:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpStake(g_nodeIp, g_nodePort, g_seed, g_wp_amount, g_offsetScheduledTick);
+            break;
+        case WP_REQUEST_UNSTAKE:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpRequestUnstake(g_nodeIp, g_nodePort, g_seed, g_wp_amount, g_offsetScheduledTick);
+            break;
+        case WP_FINALIZE_UNSTAKE:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpFinalizeUnstake(g_nodeIp, g_nodePort, g_seed, g_offsetScheduledTick);
+            break;
+        case WP_DEPOSIT_STAKING_REWARDS:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpDepositStakingRewards(g_nodeIp, g_nodePort, g_seed, g_wp_amount, g_offsetScheduledTick);
+            break;
+        case WP_CLAIM_STAKING_REWARDS:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            sanityCheckSeed(g_seed);
+            wpClaimStakingRewards(g_nodeIp, g_nodePort, g_seed, g_offsetScheduledTick);
+            break;
         case TOOGLE_MAIN_AUX:
             sanityCheckNode(g_nodeIp, g_nodePort);
             sanityCheckSeed(g_seed);

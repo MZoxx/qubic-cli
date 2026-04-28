@@ -168,3 +168,83 @@ void wpSetExcludeAddress(const char* nodeIp, int nodePort, const char* seed,
     makeContractTransaction(nodeIp, nodePort, seed, WP_CONTRACT_INDEX,
         WP_PROC_SET_EXCLUDE_ADDRESS, 0, sizeof(input), &input, scheduledTickOffset);
 }
+
+// ─── Staking ───────────────────────────────────────────────────
+
+void wpStakingInfo(const char* nodeIp, int nodePort, const char* address)
+{
+    WPGetStakingInfo_input input = {};
+    getPublicKeyFromIdentity(address, input.stakerAddress);
+
+    WPGetStakingInfo_output out = {};
+    if (runContractFunction(nodeIp, nodePort, WP_CONTRACT_INDEX,
+            WP_GET_STAKING_INFO, &input, sizeof(input), &out, sizeof(out)))
+    {
+        LOG("═══ WolfPack Staking Info ══════════════════════════════\n\n");
+        LOG("Address:            %s\n", address);
+        LOG("Is Staker:          %s\n", out.isStaker ? "YES" : "NO");
+        LOG("Staked Amount:      %llu WP\n", (unsigned long long)out.stakedAmount);
+        LOG("Pending Rewards:    %llu WP\n", (unsigned long long)out.pendingRewards);
+        LOG("Unstake Amount:     %llu WP\n", (unsigned long long)out.unstakeAmount);
+        LOG("Unstake Epoch:      %llu\n",    (unsigned long long)out.unstakeEpoch);
+        LOG("Total Staked (all): %llu WP\n", (unsigned long long)out.totalStaked);
+        LOG("Reward Pool:        %llu WP\n", (unsigned long long)out.stakingRewardPool);
+    }
+    else
+    {
+        LOG("ERROR: Could not query WP GetStakingInfo (fn 5)\n");
+    }
+}
+
+void wpStake(const char* nodeIp, int nodePort, const char* seed,
+             uint64_t numberOfShares, uint32_t scheduledTickOffset)
+{
+    WPStake_input input = {};
+    input.numberOfShares = numberOfShares;
+
+    LOG("Staking %llu WP tokens...\n", (unsigned long long)numberOfShares);
+    LOG("NOTE: Transfer management rights on QX first (newMgmtIdx: 27)\n");
+    makeContractTransaction(nodeIp, nodePort, seed, WP_CONTRACT_INDEX,
+        WP_PROC_STAKE, 0, sizeof(input), &input, scheduledTickOffset);
+}
+
+void wpRequestUnstake(const char* nodeIp, int nodePort, const char* seed,
+                      uint64_t numberOfShares, uint32_t scheduledTickOffset)
+{
+    WPRequestUnstake_input input = {};
+    input.numberOfShares = numberOfShares;
+
+    LOG("Requesting unstake of %llu WP tokens...\n", (unsigned long long)numberOfShares);
+    LOG("WARNING: 2-epoch cooldown before FinalizeUnstake is possible\n");
+    makeContractTransaction(nodeIp, nodePort, seed, WP_CONTRACT_INDEX,
+        WP_PROC_REQUEST_UNSTAKE, 0, sizeof(input), &input, scheduledTickOffset);
+}
+
+void wpFinalizeUnstake(const char* nodeIp, int nodePort, const char* seed,
+                       uint32_t scheduledTickOffset)
+{
+    LOG("Finalizing unstake...\n");
+    LOG("NOTE: 100 QU QX fee will be charged\n");
+    makeContractTransaction(nodeIp, nodePort, seed, WP_CONTRACT_INDEX,
+        WP_PROC_FINALIZE_UNSTAKE, 0, 0, nullptr, scheduledTickOffset);
+}
+
+void wpDepositStakingRewards(const char* nodeIp, int nodePort, const char* seed,
+                             uint64_t numberOfShares, uint32_t scheduledTickOffset)
+{
+    WPDepositStakingRewards_input input = {};
+    input.numberOfShares = numberOfShares;
+
+    LOG("Depositing %llu WP tokens into staking reward pool...\n", (unsigned long long)numberOfShares);
+    makeContractTransaction(nodeIp, nodePort, seed, WP_CONTRACT_INDEX,
+        WP_PROC_DEPOSIT_STAKING_REWARDS, 0, sizeof(input), &input, scheduledTickOffset);
+}
+
+void wpClaimStakingRewards(const char* nodeIp, int nodePort, const char* seed,
+                           uint32_t scheduledTickOffset)
+{
+    LOG("Claiming staking rewards...\n");
+    LOG("NOTE: 100 QU QX fee will be charged\n");
+    makeContractTransaction(nodeIp, nodePort, seed, WP_CONTRACT_INDEX,
+        WP_PROC_CLAIM_STAKING_REWARDS, 0, 0, nullptr, scheduledTickOffset);
+}

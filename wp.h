@@ -10,14 +10,20 @@
 #define WP_GET_HOLDER_INFO      2
 #define WP_GET_CLAN_MEMBER_INFO 3
 #define WP_GET_SHAREHOLDER_INFO 4
+#define WP_GET_STAKING_INFO     5
 
 // Procedure IDs
-#define WP_PROC_DEPOSIT_REVENUE     1
-#define WP_PROC_ADD_CLAN_MEMBER     2
-#define WP_PROC_REMOVE_CLAN_MEMBER  3
-#define WP_PROC_SET_CLAN_RANK       4
-#define WP_PROC_SET_ADMIN           5
-#define WP_PROC_SET_EXCLUDE_ADDRESS 6
+#define WP_PROC_DEPOSIT_REVENUE         1
+#define WP_PROC_ADD_CLAN_MEMBER         2
+#define WP_PROC_REMOVE_CLAN_MEMBER      3
+#define WP_PROC_SET_CLAN_RANK           4
+#define WP_PROC_SET_ADMIN               5
+#define WP_PROC_SET_EXCLUDE_ADDRESS     6
+#define WP_PROC_STAKE                   7
+#define WP_PROC_REQUEST_UNSTAKE         8
+#define WP_PROC_FINALIZE_UNSTAKE        9
+#define WP_PROC_DEPOSIT_STAKING_REWARDS 10
+#define WP_PROC_CLAIM_STAKING_REWARDS   11
 
 // ─── Input/Output structs ──────────────────────────────────────
 
@@ -106,6 +112,44 @@ struct WPSetExcludeAddress_input
     uint8_t address[32];
 };
 
+// fn 5 – GetStakingInfo
+struct WPGetStakingInfo_input
+{
+    uint8_t stakerAddress[32];
+};
+struct WPGetStakingInfo_output
+{
+    uint64_t stakedAmount;
+    uint64_t pendingRewards;
+    uint64_t unstakeAmount;
+    uint64_t unstakeEpoch;
+    uint64_t totalStaked;
+    uint64_t stakingRewardPool;
+    uint32_t isStaker;
+};
+
+// proc 7 – Stake
+struct WPStake_input
+{
+    uint64_t numberOfShares;
+};
+
+// proc 8 – RequestUnstake
+struct WPRequestUnstake_input
+{
+    uint64_t numberOfShares;
+};
+
+// proc 9 – FinalizeUnstake (no input)
+
+// proc 10 – DepositStakingRewards
+struct WPDepositStakingRewards_input
+{
+    uint64_t numberOfShares;
+};
+
+// proc 11 – ClaimStakingRewards (no input)
+
 // ─── Function declarations ─────────────────────────────────────
 void wpStatus(const char* nodeIp, int nodePort);
 void wpHolderInfo(const char* nodeIp, int nodePort, const char* address);
@@ -123,3 +167,16 @@ void wpSetAdmin(const char* nodeIp, int nodePort, const char* seed,
                 const char* newAdmin, uint32_t scheduledTickOffset);
 void wpSetExcludeAddress(const char* nodeIp, int nodePort, const char* seed,
                          uint64_t slot, const char* address, uint32_t scheduledTickOffset);
+
+// ─── Staking ───────────────────────────────────────────────────
+void wpStakingInfo(const char* nodeIp, int nodePort, const char* address);
+void wpStake(const char* nodeIp, int nodePort, const char* seed,
+             uint64_t numberOfShares, uint32_t scheduledTickOffset);
+void wpRequestUnstake(const char* nodeIp, int nodePort, const char* seed,
+                      uint64_t numberOfShares, uint32_t scheduledTickOffset);
+void wpFinalizeUnstake(const char* nodeIp, int nodePort, const char* seed,
+                       uint32_t scheduledTickOffset);
+void wpDepositStakingRewards(const char* nodeIp, int nodePort, const char* seed,
+                             uint64_t numberOfShares, uint32_t scheduledTickOffset);
+void wpClaimStakingRewards(const char* nodeIp, int nodePort, const char* seed,
+                           uint32_t scheduledTickOffset);
