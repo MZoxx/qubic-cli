@@ -11,6 +11,8 @@
 #define WP_GET_CLAN_MEMBER_INFO 3
 #define WP_GET_SHAREHOLDER_INFO 4
 #define WP_GET_STAKING_INFO     5
+#define WP_GET_EXCLUDE_ADDRESSES 6
+#define WP_GET_DISTRIBUTION_PREVIEW 7
 
 // Procedure IDs
 #define WP_PROC_DEPOSIT_REVENUE         1
@@ -35,6 +37,7 @@ struct WPGetStatus_output
     uint64_t shareholderCount;
     uint64_t totalSharesSnapshot;
     uint64_t clanMemberCount;
+    uint64_t clanWeightedTotal;
     uint64_t pendingRevenue;
     uint64_t reinvestmentFund;
     uint64_t totalDistributed;
@@ -128,6 +131,13 @@ struct WPGetStakingInfo_output
     uint32_t isStaker;
 };
 
+// fn 6 - GetExcludeAddresses
+struct WPGetExcludeAddresses_output
+{
+    uint8_t address1[32];
+    uint8_t address2[32];
+};
+
 // proc 7 – Stake
 struct WPStake_input
 {
@@ -180,3 +190,13 @@ void wpDepositStakingRewards(const char* nodeIp, int nodePort, const char* seed,
                              uint64_t numberOfShares, uint32_t scheduledTickOffset);
 void wpClaimStakingRewards(const char* nodeIp, int nodePort, const char* seed,
                            uint32_t scheduledTickOffset);
+struct WPGetDistributionPreview_input { uint64_t amount; };
+struct WPGetDistributionPreview_output {
+    uint64_t holderShare;
+    uint64_t shareholderShare;
+    uint64_t clanShare;
+    uint64_t reinvestShare;
+};
+
+void wpDistPreview(const char* nodeIp, int nodePort, uint64_t amount);
+void wpExcludeAddresses(const char* nodeIp, int nodePort);

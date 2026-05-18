@@ -1,4 +1,4 @@
-#include "wp.h"
+#include "ggwp.h"
 #include "wallet_utils.h"
 #include "key_utils.h"
 #include "logger.h"
@@ -25,6 +25,7 @@ void wpStatus(const char* nodeIp, int nodePort)
         LOG("Shareholder Count:       %llu\n", (unsigned long long)out.shareholderCount);
         LOG("Total Shares Snapshot:   %llu\n", (unsigned long long)out.totalSharesSnapshot);
         LOG("Clan Member Count:       %llu\n", (unsigned long long)out.clanMemberCount);
+        LOG("Clan Weighted Total:     %llu\n", (unsigned long long)out.clanWeightedTotal);
         LOG("Pending Revenue:         %llu QU\n", (unsigned long long)out.pendingRevenue);
         LOG("Reinvestment Fund:       %llu QU\n", (unsigned long long)out.reinvestmentFund);
         LOG("Total Distributed:       %llu QU\n", (unsigned long long)out.totalDistributed);
@@ -247,4 +248,44 @@ void wpClaimStakingRewards(const char* nodeIp, int nodePort, const char* seed,
     LOG("NOTE: 100 QU QX fee will be charged\n");
     makeContractTransaction(nodeIp, nodePort, seed, WP_CONTRACT_INDEX,
         WP_PROC_CLAIM_STAKING_REWARDS, 0, 0, nullptr, scheduledTickOffset);
+}
+
+
+void wpExcludeAddresses(const char* nodeIp, int nodePort)
+{
+    LOG("=== WolfPack Exclude Addresses ===\n\n");
+
+    WPGetExcludeAddresses_output out = {};
+    if (runContractFunction(nodeIp, nodePort, WP_CONTRACT_INDEX,
+            WP_GET_EXCLUDE_ADDRESSES, nullptr, 0, &out, sizeof(out)))
+    {
+        printIdentity("Exclude Slot 1: ", out.address1);
+        printIdentity("Exclude Slot 2: ", out.address2);
+    }
+    else
+    {
+        LOG("ERROR: Could not query WP GetExcludeAddresses (fn 6)\n");
+    }
+}
+
+
+void wpDistPreview(const char* nodeIp, int nodePort, uint64_t amount)
+{
+    LOG("=== WolfPack Distribution Preview for %llu QU ===\n", (unsigned long long)amount);
+
+    WPGetDistributionPreview_input in = {};
+    in.amount = amount;
+    WPGetDistributionPreview_output out = {};
+    if (runContractFunction(nodeIp, nodePort, WP_CONTRACT_INDEX,
+            WP_GET_DISTRIBUTION_PREVIEW, &in, sizeof(in), &out, sizeof(out)))
+    {
+        LOG("Holder Share:       %llu\n", (unsigned long long)out.holderShare);
+        LOG("Shareholder Share:  %llu\n", (unsigned long long)out.shareholderShare);
+        LOG("Clan Share:         %llu\n", (unsigned long long)out.clanShare);
+        LOG("Reinvest Share:     %llu\n", (unsigned long long)out.reinvestShare);
+    }
+    else
+    {
+        LOG("ERROR: Could not query WP GetDistributionPreview (fn 7)\n");
+    }
 }

@@ -208,25 +208,29 @@ void print_help()
     printf("\t\tRevoke asset management rights back to QX (100 QU fee).\n");
 
     printf("\n[WOLFPACK COMMANDS]\n");
-    printf("\t-wpstatus\n");
+    printf("\t-ggwpstatus\n");
     printf("\t\tShow WolfPack contract status.\n");
-    printf("\t-wpholderinfo <ADDRESS>\n");
+    printf("\t-ggwpholderinfo <ADDRESS>\n");
     printf("\t\tShow token balance and holder status for an address.\n");
-    printf("\t-wpclaninfo <ADDRESS>\n");
+    printf("\t-ggwpclaninfo <ADDRESS>\n");
     printf("\t\tShow clan rank and membership for an address.\n");
-    printf("\t-wpshareholderinfo <ADDRESS>\n");
+    printf("\t-ggwpshareholderinfo <ADDRESS>\n");
     printf("\t\tShow SC shareholder status and shares for an address.\n");
-    printf("\t-wpdeposit <amount>\n");
+    printf("\t-ggwpexcludeinfo\n");
+    printf("\t\tShow WolfPack exclude addresses (slot 1 and slot 2).\n");
+    printf("\t-ggwpdistpreview <AMOUNT>\n");
+    printf("\t\tPreview distribution split for AMOUNT QU (calls WP fn 7).\n");
+    printf("\t-ggwpdeposit <amount>\n");
     printf("\t\tDeposit revenue into WolfPack (amount in QU).\n");
-    printf("\t-wpaddclan <ADDRESS> <rank>\n");
+    printf("\t-ggwpaddclan <ADDRESS> <rank>\n");
     printf("\t\tAdd a clan member with rank 0-4 (admin-only).\n");
-    printf("\t-wpremoveclan <ADDRESS>\n");
+    printf("\t-ggwpremoveclan <ADDRESS>\n");
     printf("\t\tRemove a clan member (admin-only).\n");
-    printf("\t-wpsetclanrank <ADDRESS> <rank>\n");
+    printf("\t-ggwpsetclanrank <ADDRESS> <rank>\n");
     printf("\t\tSet clan member rank 0-4 (admin-only).\n");
-    printf("\t-wpsetadmin <ADDRESS>\n");
+    printf("\t-ggwpsetadmin <ADDRESS>\n");
     printf("\t\tSet new admin address (admin-only).\n");
-    printf("\t-wpsetexclude <slot> <ADDRESS>\n");
+    printf("\t-ggwpsetexclude <slot> <ADDRESS>\n");
     printf("\t\tSet exclude address slot 1 or 2 (admin-only).\n");
 
     printf("\n[SMART CONTRACT COMMANDS]\n");
@@ -1361,14 +1365,14 @@ void parseArgument(int argc, char** argv)
          ***** WOLFPACK COMMANDS *****
          *****************************/
 
-        if (strcmp(argv[i], "-wpstatus") == 0)
+        if (strcmp(argv[i], "-ggwpstatus") == 0)
         {
             g_cmd = WP_STATUS;
             i += 1;
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpholderinfo") == 0)
+        if (strcmp(argv[i], "-ggwpholderinfo") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_HOLDER_INFO;
@@ -1377,7 +1381,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpclaninfo") == 0)
+        if (strcmp(argv[i], "-ggwpclaninfo") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_CLAN_MEMBER_INFO;
@@ -1386,7 +1390,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpshareholderinfo") == 0)
+        if (strcmp(argv[i], "-ggwpshareholderinfo") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_SHAREHOLDER_INFO;
@@ -1395,7 +1399,23 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpdeposit") == 0)
+        if (strcmp(argv[i], "-ggwpexcludeinfo") == 0)
+        {
+            g_cmd = WP_EXCLUDE_INFO;
+            i += 1;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-ggwpdistpreview") == 0)
+        {
+            CHECK_NUMBER_OF_PARAMETERS(1)
+            g_cmd = WP_DIST_PREVIEW;
+            g_wp_amount = strtoull(argv[i + 1], nullptr, 10);
+            i += 2;
+            CHECK_OVER_PARAMETERS
+            break;
+        }
+        if (strcmp(argv[i], "-ggwpdeposit") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_DEPOSIT_REVENUE;
@@ -1404,7 +1424,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpaddclan") == 0)
+        if (strcmp(argv[i], "-ggwpaddclan") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(2)
             g_cmd = WP_ADD_CLAN_MEMBER;
@@ -1414,7 +1434,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpremoveclan") == 0)
+        if (strcmp(argv[i], "-ggwpremoveclan") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_REMOVE_CLAN_MEMBER;
@@ -1423,7 +1443,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpsetclanrank") == 0)
+        if (strcmp(argv[i], "-ggwpsetclanrank") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(2)
             g_cmd = WP_SET_CLAN_RANK;
@@ -1433,7 +1453,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpsetadmin") == 0)
+        if (strcmp(argv[i], "-ggwpsetadmin") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_SET_ADMIN;
@@ -1442,7 +1462,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpsetexclude") == 0)
+        if (strcmp(argv[i], "-ggwpsetexclude") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(2)
             g_cmd = WP_SET_EXCLUDE_ADDRESS;
@@ -1452,7 +1472,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpstakinginfo") == 0)
+        if (strcmp(argv[i], "-ggwpstakinginfo") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_STAKING_INFO;
@@ -1461,7 +1481,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpstake") == 0)
+        if (strcmp(argv[i], "-ggwpstake") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_STAKE;
@@ -1470,7 +1490,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wprequestunstake") == 0)
+        if (strcmp(argv[i], "-ggwprequestunstake") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_REQUEST_UNSTAKE;
@@ -1479,14 +1499,14 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpfinalizeunstake") == 0)
+        if (strcmp(argv[i], "-ggwpfinalizeunstake") == 0)
         {
             g_cmd = WP_FINALIZE_UNSTAKE;
             i += 1;
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpdepositstaking") == 0)
+        if (strcmp(argv[i], "-ggwpdepositstaking") == 0)
         {
             CHECK_NUMBER_OF_PARAMETERS(1)
             g_cmd = WP_DEPOSIT_STAKING_REWARDS;
@@ -1495,7 +1515,7 @@ void parseArgument(int argc, char** argv)
             CHECK_OVER_PARAMETERS
             break;
         }
-        if (strcmp(argv[i], "-wpclaimrewards") == 0)
+        if (strcmp(argv[i], "-ggwpclaimrewards") == 0)
         {
             g_cmd = WP_CLAIM_STAKING_REWARDS;
             i += 1;

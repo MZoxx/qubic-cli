@@ -23,7 +23,7 @@
 #include "nostromo.h"
 #include "qbond.h"
 #include "qrwa.h"
-#include "wp.h"
+#include "ggwp.h"
 
 int run(int argc, char* argv[])
 {
@@ -422,6 +422,14 @@ int run(int argc, char* argv[])
         case WP_STATUS:
             sanityCheckNode(g_nodeIp, g_nodePort);
             wpStatus(g_nodeIp, g_nodePort);
+            break;
+        case WP_EXCLUDE_INFO:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            wpExcludeAddresses(g_nodeIp, g_nodePort);
+            break;
+        case WP_DIST_PREVIEW:
+            sanityCheckNode(g_nodeIp, g_nodePort);
+            wpDistPreview(g_nodeIp, g_nodePort, g_wp_amount);
             break;
         case WP_HOLDER_INFO:
             sanityCheckNode(g_nodeIp, g_nodePort);
